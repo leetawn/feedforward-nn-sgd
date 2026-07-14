@@ -3,19 +3,24 @@
 #include <stdio.h>
 
 
-void allocate_matrix(Matrix *in, int rows, int columns) {
-    in = (Matrix *)malloc(sizeof(in));
+Matrix * allocate_matrix(int rows, int columns) {
+    Matrix *in = (Matrix *)malloc(sizeof(Matrix));
     in->rows = rows;
     in->columns = columns;
     in->data = (double *)calloc((rows * columns), sizeof(double));
+
+    return in;
 }
 
 void free_matrix(Matrix *in) {
+    free(in->data);
     free(in);
 }
 
 int multiply(Matrix *a, Matrix *b, Matrix *out) {
     if (a->columns != b->rows) return 0;
+
+    for (int i = 0; i < out->rows * out->columns; i++) out->data[i] = 0;
 
     for (int i = 0; i < a->rows; i++) {
         for (int j = 0; j < b->columns; j++) {
@@ -27,24 +32,26 @@ int multiply(Matrix *a, Matrix *b, Matrix *out) {
     return 1;
 }
 
-void transpose(Matrix *in) {
-    int r = in->rows;
-    int c = in->columns;
+int transpose(Matrix *in, Matrix *out) {
+    if (in->rows != out->columns || in->columns != out->rows) return 0;
 
-    for (int j = 0; j < c; j++) {
-        for (int i = 0; i < r; i++) {
-            in->data[i * c + j] = in->data[j * r + i];
+    for (int i = 0; i < in->rows; i++) {
+        for (int j = 0; j < in->columns; j++) {
+            out->data[j * out->columns + i] = in->data[i * in->columns + j];
         }
-    }
+    } 
+    return 1;
 }
 
 int mv_mult(Matrix *a, Matrix *b, Matrix *out) {
-    if (a->columns != b->columns) return 0;
+    if (a->columns != b->rows) return 0;
     for (int i = 0; i < a->rows; i++) {
+        out->data[i] = 0;
         for (int k = 0; k < a->columns; k++) {
             out->data[i] += a->data[i * a->columns + k] * b->data[k];
         }
     } 
+    return 1;
 }   
 
 int element_wise_add(Matrix *a, Matrix *b) {
@@ -86,7 +93,7 @@ int element_wise_mult(Matrix *a, Matrix *b) {
     return 1;
 }
 
-void scalar_mult(Matrix *a, int k) {
+void scalar_mult(Matrix *a, double k) {
     int r = a->rows;
     int c = a->columns;
 
