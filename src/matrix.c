@@ -3,11 +3,11 @@
 #include <stdio.h>
 
 
-Matrix * allocate_matrix(int rows, int columns) {
+Matrix *allocate_matrix(u32 rows, u32 columns) {
     Matrix *in = (Matrix *)malloc(sizeof(Matrix));
     in->rows = rows;
     in->columns = columns;
-    in->data = (double *)calloc((rows * columns), sizeof(double));
+    in->data = (float *)calloc((rows * columns), sizeof(float));
 
     return in;
 }
@@ -102,4 +102,15 @@ void scalar_mult(Matrix *a, double k) {
             a->data[i * c + j] *= k;
         }
     }
+}
+
+float *vtof(Matrix *vector) {
+    if (vector->rows > 1 && vector->columns > 1) {
+        printf("Argument is not a vector.\n");
+        return NULL;
+    }
+    u32 n = vector->rows * vector->columns;
+    float *result = (float *)malloc(sizeof(float) * n);
+    memcpy(result, vector->data, sizeof(float) * n);
+    return result;
 }
