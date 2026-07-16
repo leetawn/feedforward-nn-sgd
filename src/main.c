@@ -31,11 +31,13 @@ void save_png(Matrix *image, const char *filename) {
     int result = stbi_write_png(filename, 28, 28, 1, pixels, 28);
     if (!result) {
         printf("Failed to write PNG.\n");
+    } else {
+        printf("Image generated in the ../out folder.\n");
     }
 }
 
 void test_image(Matrix *image, Network *network) {
-    save_png(image, "../out/test.png");
+    save_png(image, "out/test.png");
     Matrix *a3 = forward_pass(image, network);
     float predicted = -1.0f;
     u32 predicted_index = -1;
@@ -47,14 +49,14 @@ void test_image(Matrix *image, Network *network) {
         }
     }
     predicted *= 100;
-    printf("Image shows a %d with %f%% confidence", predicted_index, predicted);
+    printf("Image shows a %d with %f%% confidence\n\n", predicted_index, predicted);
 }
 int main() {
     srand(time(NULL));
-    char *test_images = "../test/t10k-images-idx3-ubyte/t10k-images.idx3-ubyte";
-    char *test_labels = "../test/t10k-labels-idx1-ubyte/t10k-labels.idx1-ubyte";
-    char *train_images = "../train/train-images-idx3-ubyte/train-images.idx3-ubyte";
-    char *train_labels = "../train/train-labels-idx1-ubyte/train-labels.idx1-ubyte";
+    char *test_images = "test/t10k-images-idx3-ubyte/t10k-images.idx3-ubyte";
+    char *test_labels = "test/t10k-labels-idx1-ubyte/t10k-labels.idx1-ubyte";
+    char *train_images = "train/train-images-idx3-ubyte/train-images.idx3-ubyte";
+    char *train_labels = "train/train-labels-idx1-ubyte/train-labels.idx1-ubyte";
 
     MNIST_DS *full_train_set = load(train_images, train_labels);
     MNIST_DS *test_set = load(test_images, test_labels);
@@ -74,10 +76,26 @@ int main() {
 
     printf("Final Test Accuracy: %f\n", final_eval);
 
-    Matrix *digit_image = get_image(test_set, 1);
-    test_image(digit_image, network);
-    free_matrix(digit_image);
+    char op;
+    printf("Test on a single image file? (Y/N): ");
+    scanf(" %c", &op);
+    switch (op) {
+        case 'Y': {
+            u32 digit;
+            printf("Enter digit to test: ");
+            scanf("%u", &digit);
 
+            Matrix *digit_image = get_image(test_set, digit);
+            test_image(digit_image, network);
+            free_matrix(digit_image);
+            break;
+        }
+
+        case 'N': {
+            printf("Exiting...\n");
+            break;
+        }
+    } 
     free(network);
     free(full_train_set);
     free(test_set);

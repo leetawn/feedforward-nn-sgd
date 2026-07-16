@@ -99,7 +99,9 @@ void train(Network *network, MNIST_DS *train_set, MNIST_DS *val_set, u32 epochs)
         float average_loss = total_loss / train_set->images;
         float accuracy = per_epoch_eval(val_set, network);
 
-        printf("Epoch %d:\nTotal Loss: %f\nAverage Loss: %f\nAccuracy: %f\n-------", i + 1, total_loss, average_loss, accuracy);
+        printf("\n----------------------------------\n");
+        printf("Epoch %d:\nTotal Loss: %f\nAverage Loss: %f\nAccuracy: %f", i + 1, total_loss, average_loss, accuracy);
+        printf("\n----------------------------------\n");
     }
     free(indices);
     free_matrix(input_image);

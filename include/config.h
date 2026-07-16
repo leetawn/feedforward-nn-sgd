@@ -14,6 +14,6 @@
 #define u64 uint64_t
 
 #define LEARNING_RATE 0.01
-#define EPOCHS 10
+#define EPOCHS 1
 #define VALIDATION_SET_SIZE 5000
 

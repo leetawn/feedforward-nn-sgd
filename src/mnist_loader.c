@@ -118,7 +118,6 @@ MNIST_DS *load(char *image_path, char *label_path) {
         return NULL;
     }
 
-    printf("Dataset initialized!\n");
     return dataset;
 }
 
