@@ -41,7 +41,7 @@ void save_png(Matrix *image, const char *filename) {
     if (!result) {
         printf("Failed to write PNG.\n");
     } else {
-        printf("Image generated in the ../out folder.\n");
+        printf("Image generated in the out folder.\n");
     }
 }
 
