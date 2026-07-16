@@ -33,7 +33,7 @@ To change the hyperparameters, open `include/config.h` and edit the following va
 #define VALIDATION_SET_SIZE 5000
 ```
 
-The epoch hyperparameter is currently set to 1 for faster debug purposes. Higher epoch values would result into higher accuracy.
+The epoch hyperparameter is currently set to 1 for faster debug purposes. Higher epoch values would generally result into higher accuracy, but only up to a point, experimentation is highly encouraged.
 
 ## Testing Single Images
 
