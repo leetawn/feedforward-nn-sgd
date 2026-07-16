@@ -1,0 +1,3 @@
+C:/Users/Ethan/Desktop/Prugramir/Projects/C/feedforward-nn-sgd/build/CMakeFiles/ffnn-sgd.dir
+C:/Users/Ethan/Desktop/Prugramir/Projects/C/feedforward-nn-sgd/build/CMakeFiles/edit_cache.dir
+C:/Users/Ethan/Desktop/Prugramir/Projects/C/feedforward-nn-sgd/build/CMakeFiles/rebuild_cache.dir

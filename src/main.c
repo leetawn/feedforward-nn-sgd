@@ -9,13 +9,22 @@
 
 Matrix *get_image(MNIST_DS *dataset, u32 digit) {
     Matrix *image = allocate_matrix(784, 1);
+    
+    u32 *indices = (u32 *)malloc(sizeof(u32) * dataset->images);
+    
+    fy_shuffle(indices, dataset->images);
+
     for (u32 i = 0; i < dataset->images; i++) {
-        if (dataset->labels[i] == digit) {
-            memcpy(image->data, &dataset->pixels[i * 784], sizeof(float) * 784);
+        u32 random_idx = indices[i];
+        if (dataset->labels[random_idx] == digit) {
+            memcpy(image->data, &dataset->pixels[random_idx * 784], sizeof(float) * 784);
+            free(indices); 
             return image;
         }
     }
+
     printf("No image found with digit %d\n", digit);
+    free(indices); 
     return image;
 }
 
