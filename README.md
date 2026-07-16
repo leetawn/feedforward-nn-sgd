@@ -37,8 +37,8 @@ To change the hyperparameters, open `include/config.h`[cite: 8] and edit the fol
 
 Once training completes, the program will prompt you in the terminal to test the network on a specific digit[cite: 2]. 
 
-If you select **Y**[cite: 2]:
-1. Enter the target digit (0–9) you want to look up[cite: 2].
-2. The application will search the test dataset for a matching sample[cite: 2].
-3. It will run a forward pass to predict the digit and output its confidence percentages[cite: 2].
-4. It will automatically export the tested sample as a grayscale image to `out/test.png` so you can visually verify the prediction[cite: 2].
+If you select **Y**:
+1. Enter the target digit (0–9) you want to look up.
+2. The application will search the test dataset for a matching sample.
+3. It will run a forward pass to predict the digit and output its confidence percentages.
+4. It will automatically export the tested sample as a grayscale image to `out/test.png` so you can visually verify the prediction.
