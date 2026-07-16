@@ -35,7 +35,7 @@ To change the hyperparameters, open `include/config.h` and edit the following va
 
 ## Testing Single Images
 
-Once training completes, the program will prompt you in the terminal to test the network on a specific digit[cite: 2]. 
+Once training completes, the program will prompt you in the terminal to test the network on a specific digit. 
 
 If you select **Y**:
 1. Enter the target digit (0–9) you want to look up.
