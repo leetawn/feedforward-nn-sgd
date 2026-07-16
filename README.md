@@ -25,7 +25,7 @@ make run
 
 ## Configuration & Hyperparameters
 
-To change the hyperparameters, open `include/config.h`[cite: 8] and edit the following values directly:
+To change the hyperparameters, open `include/config.h` and edit the following values directly:
 
 ```c
 #define LEARNING_RATE 0.01
