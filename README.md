@@ -29,9 +29,11 @@ To change the hyperparameters, open `include/config.h` and edit the following va
 
 ```c
 #define LEARNING_RATE 0.01
-#define EPOCHS 10
+#define EPOCHS 1
 #define VALIDATION_SET_SIZE 5000
 ```
+
+The epoch hyperparameter is currently set to 1 for faster debug purposes. Higher epoch values would result into higher accuracy.
 
 ## Testing Single Images
 
