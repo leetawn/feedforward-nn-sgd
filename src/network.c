@@ -9,6 +9,8 @@ void layer_init(Layer *layer, u32 rows, u32 columns, ActivationType activation) 
 
     layer->pre_activation_vals = allocate_matrix(rows, 1); 
     layer->post_activation_vals = allocate_matrix(rows, 1);
+    layer->weight_gradient = allocate_matrix(rows, columns);
+    layer->bias_gradient = allocate_matrix(rows, 1);
     layer->activation_type = activation;
 }
 
@@ -81,4 +83,68 @@ Matrix *forward_pass(Matrix *input_image, Network *network) {
     return input_image;
 }
 
+void backpropagation(Network *network, Matrix *input_image, Matrix *onehot) {
+    Matrix *a3 = network->layers[2].post_activation_vals;
+    Matrix *delta = allocate_matrix(network->layers[2].post_activation_vals->rows, 1);
+    memcpy(delta->data, a3->data, sizeof(float) * a3->rows);
 
+    int s = element_wise_sub(delta, onehot);
+
+    if (s == 0) {
+        printf("Error in computing initial delta.\n");
+        return;
+    }
+
+    for (int i = 2; i >= 0; i--) {
+        // db
+        memcpy(network->layers[i].bias_gradient->data, delta->data, sizeof(float) * delta->rows);
+
+        // dW
+        Matrix *ap = (i == 0) ? input_image : network->layers[i - 1].post_activation_vals;
+        Matrix *apT = allocate_matrix(ap->columns, ap->rows);
+
+        int t = transpose(ap, apT);
+        if (t == 0) {
+            printf("Error in transposing previous layer's PAV.\n");
+            return;
+        }
+
+        int m = multiply(delta, apT, network->layers[i].weight_gradient);
+        if (m == 0) {
+            printf("Error in multiplying delta and previous layer's PAV.\n");
+            return;
+        }
+
+        if (i > 0) {
+            Matrix *wmT = allocate_matrix(network->layers[i].weight_matrix->columns, network->layers[i].weight_matrix->rows);
+            int mt = transpose(network->layers[i].weight_matrix, wmT);
+            if (mt == 0) {
+                printf("Error in tranposing current layer's weight matrix.\n");
+                return;
+            }
+
+            Matrix *td = allocate_matrix(network->layers[i].weight_matrix->columns, 1);
+            int mtd = multiply(wmT, delta, td);
+            if (mtd == 0) {
+                printf("Error in computing for td.\n");
+                return;
+            }
+
+            Matrix *rd_result = allocate_matrix(network->layers[i - 1].pre_activation_vals->rows, network->layers[i - 1].pre_activation_vals->columns);
+            memcpy(rd_result->data, network->layers[i - 1].pre_activation_vals->data, sizeof(float) * network->layers[i - 1].pre_activation_vals->rows);
+            relu_derivative(rd_result);
+
+            int nd = element_wise_mult(td, rd_result);
+            if (nd == 0) {
+                printf("Error in computing new delta.\n");
+                return;
+            }
+            free_matrix(delta);
+            free_matrix(rd_result);
+            free_matrix(wmT);
+            delta = td;
+        } 
+        free_matrix(apT);
+    }
+    free_matrix(delta);
+}
