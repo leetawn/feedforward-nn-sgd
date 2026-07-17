@@ -1,11 +1,10 @@
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../include/config.h"
 #include "../include/matrix.h"
 #include "../include/mnist_loader.h"
 #include "../include/activations.h"
 #include "../include/network.h"
 #include "../include/train.h"
-#include "../include/stb_image_write.h"
+#include "../include/image.h"
 
 Matrix *get_image(MNIST_DS *dataset, u32 digit) {
     Matrix *image = allocate_matrix(784, 1);
@@ -26,39 +25,6 @@ Matrix *get_image(MNIST_DS *dataset, u32 digit) {
     printf("No image found with digit %d\n", digit);
     free(indices); 
     return image;
-}
-
-void save_png(Matrix *image, const char *filename) {
-    uc pixels[784];
-
-    for (u32 i = 0; i < 784; i++) {
-        float val = image->data[i];
-        if (val < 0.0f) val = 0.0f;
-        if (val > 1.0f) val = 1.0;
-        pixels[i] = (uc)(val * 255.0f);
-    }
-    int result = stbi_write_png(filename, 28, 28, 1, pixels, 28);
-    if (!result) {
-        printf("Failed to write PNG.\n");
-    } else {
-        printf("Image generated in the out folder.\n");
-    }
-}
-
-void test_image(Matrix *image, Network *network) {
-    save_png(image, "out/test.png");
-    Matrix *a3 = forward_pass(image, network);
-    float predicted = -1.0f;
-    u32 predicted_index = -1;
-    for (u32 i = 0; i < 10; i++) {
-        printf("%d: %f\n", i, a3->data[i]);
-        if (a3->data[i] > predicted) {
-            predicted_index = i;
-            predicted = a3->data[i];
-        }
-    }
-    predicted *= 100;
-    printf("Image shows a %d with %f%% confidence\n\n", predicted_index, predicted);
 }
 int main() {
     srand(time(NULL));
@@ -85,26 +51,41 @@ int main() {
 
     printf("Final Test Accuracy: %f\n", final_eval);
 
-    char op;
-    printf("Test on a single image file? (Y/N): ");
-    scanf(" %c", &op);
-    switch (op) {
-        case 'Y': {
-            u32 digit;
-            printf("Enter digit to test: ");
-            scanf("%u", &digit);
+    // char op;
+    // printf("Test on a single image file? (Y/N): ");
+    // scanf(" %c", &op);
+    // switch (op) {
+    //     case 'Y': {
+    //         u32 digit;
+    //         printf("Enter digit to test: ");
+    //         scanf("%u", &digit);
 
-            Matrix *digit_image = get_image(test_set, digit);
-            test_image(digit_image, network);
-            free_matrix(digit_image);
-            break;
-        }
+    //         Matrix *digit_image = get_image(test_set, digit);
+    //         test_image(digit_image, network);
+    //         free_matrix(digit_image);
+    //         break;
+    //     }
 
-        case 'N': {
-            printf("Exiting...\n");
-            break;
-        }
-    } 
+    //     case 'I': {
+    //         char filename[1024];
+    //         printf("Enter image filename: ");
+    //         Matrix *image_matrix = load_image(filename);
+    //         test_image(image_matrix, network);
+    //         break;
+    //     }
+
+    //     case 'N': {
+    //         printf("Exiting...\n");
+    //         break;
+    //     }
+    // } 
+    char filename[1024];
+    printf("Enter image filename: ");
+    scanf("%s", &filename);
+    Matrix *image_matrix = load_image(filename);
+    test_image(image_matrix, network);
+
+
     free(network);
     free(full_train_set);
     free(test_set);
