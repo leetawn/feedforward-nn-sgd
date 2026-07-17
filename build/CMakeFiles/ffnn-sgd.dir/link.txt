@@ -1,0 +1,3 @@
+C:\MinGW\mingw64\bin\cmake.exe -E rm -f CMakeFiles\ffnn-sgd.dir/objects.a
+C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\ffnn-sgd.dir/objects.a @CMakeFiles\ffnn-sgd.dir\objects1.rsp
+C:\msys64\mingw64\bin\cc.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\ffnn-sgd.dir/objects.a -Wl,--no-whole-archive -o ffnn-sgd.exe -Wl,--out-implib,libffnn-sgd.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ffnn-sgd.dir\linkLibs.rsp

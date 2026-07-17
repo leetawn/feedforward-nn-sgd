@@ -3,6 +3,7 @@
 #include "../include/matrix.h"
 #include "../include/network.h"
 #include "../include/mnist_loader.h"
+#include "../include/progress_bar.h"
 
 void onehot(u32 label, Matrix *out);
 float cross_entropy(Matrix *a3, u32 label);

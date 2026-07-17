@@ -5,27 +5,10 @@
 #include "../include/network.h"
 #include "../include/train.h"
 #include "../include/image.h"
+#include "../include/gui.h"
+#include "../include/progress_bar.h"
 
-Matrix *get_image(MNIST_DS *dataset, u32 digit) {
-    Matrix *image = allocate_matrix(784, 1);
-    
-    u32 *indices = (u32 *)malloc(sizeof(u32) * dataset->images);
-    
-    fy_shuffle(indices, dataset->images);
 
-    for (u32 i = 0; i < dataset->images; i++) {
-        u32 random_idx = indices[i];
-        if (dataset->labels[random_idx] == digit) {
-            memcpy(image->data, &dataset->pixels[random_idx * 784], sizeof(float) * 784);
-            free(indices); 
-            return image;
-        }
-    }
-
-    printf("No image found with digit %d\n", digit);
-    free(indices); 
-    return image;
-}
 int main() {
     srand(time(NULL));
     char *test_images = "test/t10k-images-idx3-ubyte/t10k-images.idx3-ubyte";
@@ -39,51 +22,51 @@ int main() {
     MNIST_DS *train_set = (MNIST_DS *)malloc(sizeof(MNIST_DS));
     MNIST_DS *val_set = (MNIST_DS *)malloc(sizeof(MNIST_DS));
 
+    char op;
+    int prompt = 1;
+    while (prompt) {
+        printf("\n\nDefault hyperparameter values are based on standard values.\nIt is recommended to keep the Epoch count between 10-20, Learning Rate at 0.01, and Validation Set Size at 5000.\nDo you want to set custom hyperparameter values? (y/n): ");
+        scanf(" %c", &op);
+        switch (op) {
+            case 'y': {
+                printf("Epochs: ");
+                scanf("%d", &EPOCHS);
+                printf("Learning Rate: ");
+                scanf("%f", &LEARNING_RATE);
+                printf("Validation Set Size: ");
+                scanf("%d", &VALIDATION_SET_SIZE);
+                prompt = 0;
+                break;
+            }
+
+            case 'n': {
+                printf("Using default values.\n");
+                prompt = 0;
+                break;
+            }
+            case 'x': {
+                prompt = 0;
+                break;
+            }
+            default: {
+                printf("Invalid option.\n");
+                break;
+            }
+        }
+    }
     split_train(full_train_set, train_set, val_set, VALIDATION_SET_SIZE);
-    printf("Split into train/val sets.\n");
 
     Network *network = network_init();
     printf("Network initialized.\n");
 
+    printf("Starting training.\n");
     train(network, train_set, val_set, EPOCHS);
     printf("Training complete.\n");
     float final_eval = per_epoch_eval(test_set, network);
 
-    printf("Final Test Accuracy: %f\n", final_eval);
+    printf("Final Test Accuracy: %.4f%%\n", final_eval * 100.0);
 
-    // char op;
-    // printf("Test on a single image file? (Y/N): ");
-    // scanf(" %c", &op);
-    // switch (op) {
-    //     case 'Y': {
-    //         u32 digit;
-    //         printf("Enter digit to test: ");
-    //         scanf("%u", &digit);
-
-    //         Matrix *digit_image = get_image(test_set, digit);
-    //         test_image(digit_image, network);
-    //         free_matrix(digit_image);
-    //         break;
-    //     }
-
-    //     case 'I': {
-    //         char filename[1024];
-    //         printf("Enter image filename: ");
-    //         Matrix *image_matrix = load_image(filename);
-    //         test_image(image_matrix, network);
-    //         break;
-    //     }
-
-    //     case 'N': {
-    //         printf("Exiting...\n");
-    //         break;
-    //     }
-    // } 
-    char filename[1024];
-    printf("Enter image filename: ");
-    scanf("%s", &filename);
-    Matrix *image_matrix = load_image(filename);
-    test_image(image_matrix, network);
+    display(network); 
 
 
     free(network);

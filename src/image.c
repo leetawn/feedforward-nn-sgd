@@ -1,6 +1,3 @@
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STB_IMAGE_RESIZE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
 #include "../include/image.h"
 #include "../include/stb_image.h"
 #include "../include/stb_image_write.h"
@@ -77,19 +74,47 @@ IMAGE_EXTENSION get_image_extension(char *filename) {
     return INVALID;
 }
 
-void test_image(Matrix *image, Network *network) {
+char *test_image(Matrix *image, Network *network) {
+    char *buffer = (char *)malloc(sizeof(char) * 2048);
     Matrix *a3 = forward_pass(image, network);
     float predicted = -1.0f;
     u32 predicted_index = -1;
+    int offset = 0;
+    int max_size = 2048;
     for (u32 i = 0; i < 10; i++) {
-        printf("%d: %f\n", i, a3->data[i]);
+        int written = snprintf(buffer + offset, max_size - offset, "%d: %.4f%%\n", i, a3->data[i] * 100.0f);
+
+        if (written) offset += written;
         if (a3->data[i] > predicted) {
             predicted_index = i;
             predicted = a3->data[i];
         }
     }
     predicted *= 100;
-    printf("Image shows a %d with %f%% confidence\n\n", predicted_index, predicted);
+
+    snprintf(buffer + offset, max_size - offset, "\nPredicted: %d (%.2f%% confidence)", predicted_index, predicted);
+    return buffer;
+}
+
+Matrix *get_image_from_mnist(MNIST_DS *dataset, u32 digit) {
+    Matrix *image = allocate_matrix(784, 1);
+    
+    u32 *indices = (u32 *)malloc(sizeof(u32) * dataset->images);
+    
+    fy_shuffle(indices, dataset->images);
+
+    for (u32 i = 0; i < dataset->images; i++) {
+        u32 random_idx = indices[i];
+        if (dataset->labels[random_idx] == digit) {
+            memcpy(image->data, &dataset->pixels[random_idx * 784], sizeof(float) * 784);
+            free(indices); 
+            return image;
+        }
+    }
+
+    printf("No image found with digit %d\n", digit);
+    free(indices); 
+    return image;
 }
 
 /*

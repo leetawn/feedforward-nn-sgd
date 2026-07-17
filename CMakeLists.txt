@@ -29,6 +29,12 @@ file(GLOB SOURCES "src/*.c")
 
 add_executable(ffnn-sgd ${SOURCES})
 
+target_link_libraries(ffnn-sgd PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/lib/libraylib.a")
+
+if(WIN32)
+    target_link_libraries(ffnn-sgd PRIVATE opengl32 gdi32 winmm)
+endif()
+
 if(UNIX AND NOT APPLE)
     target_link_libraries(ffnn-sgd m)
 endif()

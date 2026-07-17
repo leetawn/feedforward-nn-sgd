@@ -13,7 +13,7 @@
 #define u32 uint32_t
 #define u64 uint64_t
 
-#define LEARNING_RATE 0.01
-#define EPOCHS 3
-#define VALIDATION_SET_SIZE 5000
+extern float LEARNING_RATE;
+extern int EPOCHS;
+extern int VALIDATION_SET_SIZE;
 

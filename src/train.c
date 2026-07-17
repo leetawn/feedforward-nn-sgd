@@ -91,17 +91,16 @@ void train(Network *network, MNIST_DS *train_set, MNIST_DS *val_set, u32 epochs)
             sgd_update(network);    
 
             if (image_index % 1000 == 0) {
-                printf("  Epoch %d - image %d/%d\n", i + 1, image_index, train_set->images);
-                fflush(stdout);
+                printf("\rEpoch %d: ", i + 1);
+                progress(image_index, train_set->images);
             }
         }
+        progress(train_set->images, train_set->images);
+        printf("\n");
 
         float average_loss = total_loss / train_set->images;
         float accuracy = per_epoch_eval(val_set, network);
 
-        printf("\n----------------------------------\n");
-        printf("Epoch %d:\nTotal Loss: %f\nAverage Loss: %f\nAccuracy: %f", i + 1, total_loss, average_loss, accuracy);
-        printf("\n----------------------------------\n");
     }
     free(indices);
     free_matrix(input_image);

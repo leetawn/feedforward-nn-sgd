@@ -14,5 +14,4 @@ typedef enum IMAGE_EXTENSION {
 Matrix *load_image(char *filename);
 uc *resize_image(char *filename, uc *original_data, u32 original_width, u32 original_height, u32 original_channels);
 IMAGE_EXTENSION get_image_extension(char *filename);
-// void save_image(Matrix *image, char *out);
-void test_image(Matrix *image, Network *network);
+char *test_image(Matrix *image, Network *network);
