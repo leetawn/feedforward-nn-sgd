@@ -27,5 +27,5 @@ make run
 
 ## Note
 
-- **MNIST Alignment:** The network is trained on the standard MNIST dataset. Because of this, accuracy depends heavily on how closely your hand-drawn digits match the style, thickness, and centering of the original training images.
+- **MNIST Alignment:** The network is trained on the standard MNIST dataset. Because of this, accuracy depends heavily on how closely your hand-drawn digits match the style, thickness, and centering of the original training images. It can achieve good results on the actual MNIST dataset itself, I just wanted it to be interactive or something.
 - **Brush Radius:** The brush size is currently locked to a specific radius that yields the most optimal results. I might add a slider for the brush radius but this will do for now.
